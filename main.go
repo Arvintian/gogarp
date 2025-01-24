@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"net"
+	"net/netip"
 	"os"
 
 	"github.com/mdlayher/arp"
@@ -37,7 +38,7 @@ func main() {
 	for _, addr := range addrs {
 		ip, _, _ := net.ParseCIDR(addr.String())
 		if ip.To4() != nil {
-			p, err := arp.NewPacket(arp.OperationRequest, ifi.HardwareAddr, ip, net.HardwareAddr{0, 0, 0, 0, 0, 0}, ip)
+			p, err := arp.NewPacket(arp.OperationRequest, ifi.HardwareAddr, netip.AddrFrom4([4]byte(ip.To4())), net.HardwareAddr{0, 0, 0, 0, 0, 0}, netip.AddrFrom4([4]byte(ip.To4())))
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
